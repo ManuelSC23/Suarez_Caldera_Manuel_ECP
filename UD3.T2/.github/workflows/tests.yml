@@ -1,0 +1,32 @@
+# .github/workflows/tests.yml
+name: Executar Tests e Notificar
+on:
+  push:
+    branches: [ "**" ] # Execútase en calquera push, en calquera rama
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false # Se falla unha unidade segue coas demáis
+      matrix:
+        unidad: [ "UD3.T2" ]
+
+    steps:
+      - name: Descargar o código
+        uses: actions/checkout@v4
+
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Instalar dependencias
+        run: |
+          python -m pip install --upgrade pip
+          pip install pytest
+
+      - name: Executar tests da unidade ${{ matrix.unidad }}
+        working-directory: ./${{ matrix.unidad }}
+        run: pytest
